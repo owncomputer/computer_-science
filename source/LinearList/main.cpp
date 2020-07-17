@@ -53,6 +53,16 @@ int main() {
 
      add_linked(linkedlist,1);
     add_linked(linkedlist,2);
+    insert_linked(linkedlist,2,3);
+    print(linkedlist);
+
+    ElementType  elementL ;
+    for (int j = 0; j < linkedlist->length; ++j) {
+        getElement_linked(linkedlist,j,&elementL);
+        printf("j = %d  , element = %d\n" , j , elementL);
+    }
+
+    del_linked(linkedlist,0);
     print(linkedlist);
     return 0;
 }

@@ -17,34 +17,46 @@ bool  isEmpty_linked(LinkedList * list){
 }
 
 
-
-bool update_linked(LinkedList * list , int atIndex,ElementType newElement){
-
-}
-bool del_linked(LinkedList * list , int atIndex){
-
-}
-
 static bool getNode(LinkedList * list,int atIndex,Node * * elementNode){
     if (isEmpty_linked(list) || atIndex < -1 || atIndex >= list->length ){
         return  false ;
     }
     Node * node = (Node*)list ;//此处需要注意，我们只需head的值，是可以的，
-    int i = 0 ;
+    int i = -1 ;
     while (i < atIndex){
         node = node->next ;
         i += 1 ;
     }
-    if (atIndex == -1){
-        *elementNode = node ;
-    } else{
-        *elementNode = node->next ;
-    }
+    *elementNode = node ;
+
 
 
     return  true ;
 
 }
+bool update_linked(LinkedList * list , int atIndex,ElementType newElement){
+    Node * node ;
+    bool res =  getNode(list,atIndex,&node) ;
+    if (res){
+        node->element = newElement ;
+    }
+
+    return  res ;
+}
+bool del_linked(LinkedList * list , int atIndex){
+
+    Node  * preNode ;
+    bool res = getNode(list,atIndex - 1 ,&preNode);
+    if (res){
+          Node * node = preNode->next ;
+          preNode->next = preNode->next->next;
+          free(node);
+          node = NULL ;
+          list->length -= 1 ;
+    }
+    return  res ;
+}
+
 bool getElement_linked(LinkedList * list,int atIndex,ElementType *element) {
 
     Node * node ;
@@ -55,7 +67,18 @@ bool getElement_linked(LinkedList * list,int atIndex,ElementType *element) {
     return  res ;
 }
 int search_linked(LinkedList * list,ElementType element){
+    Node * currentNode = (Node * ) list ;
+    int index = -1 ;
+    while (currentNode->next != NULL){
+        currentNode = currentNode->next ;
+        index += 1 ;
+        if (currentNode->element == element){
+            return index ;
+        }
+    }
 
+
+    return  index ;
 }
 
 bool add_linked(LinkedList  * sqlist , ElementType element){
@@ -63,16 +86,13 @@ bool add_linked(LinkedList  * sqlist , ElementType element){
    node->next = NULL ;
    node->element = element ;
 
-   if (sqlist->head == NULL){
-       sqlist->head = node ;
-   }else{
-       Node * currentNode = (Node * ) sqlist->head ;
-       while (currentNode->next != NULL){
+    Node * currentNode = (Node * ) sqlist ;
+    while (currentNode->next != NULL){
            currentNode = currentNode->next ;
-       }
-       currentNode->next = node ;
-   }
+    }
+    currentNode->next = node ;
 
+    sqlist->length  += 1 ;
     return  true ;
 
 }
@@ -86,23 +106,23 @@ bool insert_linked(LinkedList  * list , int atIndex,ElementType newElement){
 
          node->next = preNode->next;
          preNode->next = node ;
+         list->length += 1 ;
      }
     return  res ;
 }
 
 void  print(LinkedList  * list){
-    Node * currentNode = (Node * )list->head ;
-    int i = 0 ;
-    if (currentNode == NULL){
-        printf("空链表\n");
-    }else{
-        while (currentNode->next != NULL){
-            printf("%d  =  %d \n", i,currentNode->element);
-            currentNode = currentNode->next ;
-            i += 1 ;
-        }
-        printf("%d  =  %d \n", i,currentNode->element);
-    }
+    Node * currentNode = (Node * )list ;
+    int i = 0;
+    while (currentNode->next != NULL){
 
+        currentNode = currentNode->next ;
+        printf("%d  =  %d \n", i,currentNode->element);
+        i += 1 ;
+
+    }
+    if (i == 0){
+        printf("空链表\n");
+    }
 
 }
