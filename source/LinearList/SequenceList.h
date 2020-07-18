@@ -53,6 +53,15 @@ bool add(SQList * * sqlist , ElementType element);// 此函数可能会改变表
 bool insertE(SQList * * sqlist , int atIndex,ElementType newElement);// 此函数可能会改变表的内存，故需要传指针变量的地址
 #endif
 
+
+
+////////////////循环顺序表///////////////////////
+typedef struct sqcyclelist{
+    int headIndex;
+    int rearIndex;
+    ElementType element[MaxCapacity];
+}SQCycleList ;
+
 #endif //LINEARLIST_SEQUENCELIST_H
 
 

@@ -6,6 +6,8 @@
 
 # 总览
 
+因GitHub不支持TOC等等一些markdown标记，推荐clone项目到本地，然后用Typora 软件来查看。效果比较好
+
 ## 1. 概述
 
 
