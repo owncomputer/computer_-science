@@ -46,6 +46,6 @@ bool add_cycle_linked(CycleList  * sqlist , ElementType element){
 bool insert_cycle_linked(CycleList  * list , ElementType element,ElementType newElement){
 
 }
-void  print(CycleList  * list){
+void  printcycle_linked(CycleList  * list){
 
 }

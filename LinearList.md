@@ -2,7 +2,9 @@
 
 # 线性表
 
-线性表：实现数据值之间一对一的线性关系的一种数据结构。定义为零个或多个相同特性值的有序集合，第一没有前驱，最后一个没有后继，其它均有前驱和后继数据值。
+线性表：实现数据值之间一对一的线性关系的一种数据结构。
+
+定义为零个或多个相同特性值的有序集合，第一没有前驱，最后一个没有后继，其它均有前驱和后继数据值。
 
 
 
@@ -425,11 +427,161 @@ typedef  struct  doublecyclelinkedlist{
 
 队列：首先是一种线性表，其次只能在一端进行添加操作，另一端进行删除操作。
 
->
->
->
+#### 2.1.1 队列的顺序表实现--循环队列
+**顺序表一旦创建其容量大小就固定了，故不能添加无限元素**。而且需要两个‘指针’来标识头尾。
+
+```c
+#define  MAX_QUEUE_SQ 6
+
+typedef  int ElementType ;
+
+// (rear + 1)%MAX_QUEUE_SQ == head ,表示队列满了
+// head == rear ，表示队列空了
+typedef struct queue_sq{
+    int head ; // 指向头元素位置，
+    int rear ;//指向尾元素的下一个位置。
+   // int length ; 可添加一个变量，提高一些操作的效率
+    ElementType elements[MAX_QUEUE_SQ];
+}QueueSQ;
+
+// 对数据的操作
+QueueSQ * alloc_init_queue_sq();// 在堆上创建顺序表
+bool  isEmpty_queue_sq(QueueSQ * queue);//是否空
+bool  isFull_queue_sq(QueueSQ * queue);//是否空
+bool enqueue_sq(QueueSQ  * queue , ElementType element);
+bool dequeue_sq(QueueSQ * queue , ElementType * element);
+int search_queue_sq(QueueSQ * queue,ElementType element);
+void  print_queue_sq(QueueSQ  * list);
+
+
+```
+
+几个核心操作的实现
+
+```c
+
+//入队
+     queue->elements[queue->rear] = element ;
+     queue->rear = (queue->rear +1)%MAX_QUEUE_SQ ;
+
+//出队
+    *element =   queue->elements[queue->head] ;
+    queue->head = (queue->head + 1 )%MAX_QUEUE_SQ ;
+
+// 遍历及查找
+    int endIndex = MAX_QUEUE_SQ - 1 ;
+    bool rearBeforeHead = false ;
+    if (queue->rear > queue->head){
+         endIndex = queue->rear ;
+    } else{
+        rearBeforeHead = true ;
+    }
+    for (int i = queue->head; i <= endIndex; ++i) {}
+    if (rearBeforeHead){
+        for (int i = 0; i < queue->rear; ++i) {}
+    }
+
+```
+
+![img](./images/datastructure_queue_sequence.png)
+
+添加、删除时间复杂度都为O(1),查找O(n)。
+
+#### 2.1.1 队列的链表实现
+
+**链式循环队列：**参考循环单链表1.3.2.2节的实现。
+
+**链式非循环队列：**数据结构与循环队列一样，只是在操作实现时，把尾结点的next置为NULL。
+
+> 主要注意事项：在表头删除元素，在表尾添加元素。为了操作效率，需要头尾两个指针，指向队列的两端。添加、删除时间复杂度都为O(1),查找O(n)。
 
 ### 2.2 栈
 
-队列：首先是一种线性表，其次只能同一端(表尾)进行添加、删除操作。
+栈：首先是一种线性表，其次只能同一端(表尾)进行添加、删除操作。
+
+#### 2.2.1 栈的顺序表实现
+
+它的数据结构如下：
+
+```c
+typedef int ElementType ;//数据类型
+
+#define MaxStackCapacity 5 //默认数组容量
+// 顺序表--固定容量
+typedef struct sqstack{
+   // int length;
+    int top ;  //两种实现意义都可以：1.指向栈顶，即为可添加的下一个位置。2.指向最顶端的元素的位置，空栈为值-1。
+    ElementType element[MaxStackCapacity];
+}SQStack ;
+
+SQStack * alloc_init_stack();// 在堆上创建顺序表
+bool  isEmpty_stack(SQStack * stack);//是否空
+bool  isFull_stack(SQStack * stack);//是否满
+bool push(SQStack  * stack , ElementType element);
+bool pop(SQStack * stack ,  ElementType * element);
+```
+
+简单实现代码
+
+```c
+SQStack * alloc_init_stack(){
+    SQStack * stack = (SQStack * )malloc(sizeof(struct sqstack));
+    stack->top = 0 ;// 采用第一种实现
+    return  stack ;
+}
+bool  isEmpty_stack(SQStack * stack){
+    return  stack->top == 0 ;
+}
+bool  isFull_stack(SQStack * stack){
+    return  stack->top == MaxStackCapacity ;
+}
+bool push(SQStack  * stack , ElementType element){
+      if (isFull_stack(stack)){
+          return  false ;
+      }
+      stack->element[stack->top] = element;
+      stack->top += 1 ;
+    return  true ;
+}
+bool pop(SQStack * stack ,  ElementType * element){
+    if (isEmpty_stack(stack)){
+        return  false ;
+    }
+    stack->top -= 1 ;
+    *element = stack->element[stack->top] ;
+    return  true ;
+}
+```
+
+
+
+>**顺序表的共享栈：**一块内存的两个逻辑栈的共享。
+>
+>```c
+>#define MaxStackShareCapacity 9 //默认数组容量
+>typedef struct sqstackshare{
+>   // int length;
+>    int top ;  //指向最顶端的元素的位置，空栈为值-1。
+>    int top2 ; //指向最顶端的元素的位置，空栈为值MaxStackShareCapacity。
+>    ElementType element[MaxStackCapacity];
+>}SQStackShare ;
+>```
+>
+>示例图如下
+
+![img](./images/datastructure_sharestack.png)
+
+
+#### 2.2.2 栈的链表实现
+
+参考单链表的实现，只是仅从head添加和删除。
+
+### 2.3 串--字符串
+
+串：零个或多个字符组成的有限序列。本质是一种线性表，但它更多针对的是子串的问题，而不是一个个单个元素。比如查找、替换子串。
+
+>**关注重点：操作的实现及采用特定算法改进操作效率。** 掌握其思想。
+>
+>1. 朴素模式匹配
+>2. KMP模式匹配
 
