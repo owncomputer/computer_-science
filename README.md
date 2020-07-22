@@ -171,8 +171,10 @@ var human = Human()//值在堆中，变量在栈中
 ##### 2.2.1.3 值之间的一对多的树形关系
 ![](./images/datastructure_tree.png)
 
+这种数据结构的详情实现参见[树](./Tree.md)
 
 ##### 2.2.1.4 值之间的一对多的图形关系
+
 ![](./images/datastructure_graph.png)
 
 #### 2.2.2二种物理关系(结构)
